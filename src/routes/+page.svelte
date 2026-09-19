@@ -1,16 +1,14 @@
 <script lang="ts">
 	import { account, type GigAllocation } from '$lib/state/account.svelte';
 	import Calendar from '$lib/components/dashboard/calendar.svelte';
+	import Snapshot from '$lib/components/dashboard/snapshot.svelte';
 
 	const formatCurrency = (value: number) =>
 		`$${Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
-	const safeToSpend = $derived(account.getSafeToSpend());
 	const upcomingGigs = $derived(
 		account.gigs.filter((gig) => gigDateKey(gig.date) >= dateKey(new Date()))
 	);
-	const totalGoalsSaved = $derived(account.goals.reduce((sum, goal) => sum + goal.saved, 0));
-	const monthlyProgress = $derived(account.getMonthlyProgress());
 
 	function dateKey(date: Date): string {
 		return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -87,78 +85,7 @@
 <div class="dashboard-shell">
 	<!-- Main dashboard panel -->
 	<section class="main-panel">
-		<section class="overview-card">
-			<div class="overview-heading">
-				<div>
-					<h1>Hey Amelie!</h1>
-				</div>
-				<div class="safe-amount">
-					<span>Safe to spend</span>
-					<strong>{formatCurrency(safeToSpend)}</strong>
-				</div>
-			</div>
-
-			<div class="overview-stats">
-				<div><span>Income</span><strong>{formatCurrency(monthlyProgress.income)}</strong></div>
-				<div><span>Bills</span><strong>{formatCurrency(account.monthlyexpenses)}</strong></div>
-				<div><span>Goals</span><strong>{formatCurrency(totalGoalsSaved)}</strong></div>
-			</div>
-
-			<div class="section-head progress-heading">
-				<div>
-					<h2>Monthly progress</h2>
-					<span>{monthlyProgress.month}</span>
-				</div>
-				<strong>{formatCurrency(monthlyProgress.income)} earned</strong>
-			</div>
-
-			<div class="saved-line">
-				<span>Saved this month</span>
-				<strong>{formatCurrency(monthlyProgress.saved)}</strong>
-			</div>
-
-			<div class="progress-list">
-				<div class="progress-item">
-					<div>
-						<span>Bills left this month</span>
-						<strong>
-							{formatCurrency(
-								Math.max(monthlyProgress.monthlyBills - monthlyProgress.billsPaid, 0)
-							)}
-						</strong>
-					</div>
-					<div class="progress-track">
-						<span
-							class="bills-bar"
-							style={`width: ${Math.min((monthlyProgress.billsPaid / Math.max(monthlyProgress.monthlyBills, 1)) * 100, 100)}%`}
-						></span>
-					</div>
-				</div>
-				<div class="progress-item">
-					<div>
-						<span>Slow-month reserve</span>
-						<strong>{formatCurrency(monthlyProgress.slowMonthReserve)}</strong>
-					</div>
-					<div class="progress-track">
-						<span
-							class="reserve-bar"
-							style={`width: ${Math.min((monthlyProgress.slowMonthReserve / Math.max(monthlyProgress.bills, 1)) * 100, 100)}%`}
-						></span>
-					</div>
-				</div>
-				<div class="progress-item">
-					<div>
-						<span>Goals</span><strong>{formatCurrency(monthlyProgress.goalSavings)}</strong>
-					</div>
-					<div class="progress-track">
-						<span
-							class="goals-bar"
-							style={`width: ${Math.min((monthlyProgress.goalSavings / Math.max(monthlyProgress.income, 1)) * 100, 100)}%`}
-						></span>
-					</div>
-				</div>
-			</div>
-		</section>
+		<Snapshot />
 
 		<Calendar />
 	</section>

@@ -195,4 +195,18 @@
 		background: rgba(255, 255, 255, 0.72);
 		color: #2d2340;
 	}
+
+	h2 {
+		margin: 0;
+		color: #2d2340;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+	}
+
+	.section-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 0 0.2rem;
+	}
 </style>
