@@ -140,6 +140,10 @@
 </section>
 
 <style>
+	.page-header {
+		font-family: 'Itim', sans-serif;
+	}
+
 	.add-goal-card {
 		display: grid;
 		gap: 1rem;

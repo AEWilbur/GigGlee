@@ -47,7 +47,7 @@ export class Account {
 	taxrate: number = $state(0);
 
 	goalAllocationPercent: number = $state(60);
-	reserveMonths: number = $state(6);
+	reserveMonths: number = $state(3);
 
 	expenseCategories: ExpenseCategory[] = $state([
 		{ name: 'Housing', amount: 0 },
@@ -86,6 +86,7 @@ export class Account {
 		this.applyAllocations(newGig.allocations ?? [], 1);
 	}
 
+	// allocates saved money into bills, reserve, and remaining money to goals
 	public getPlanPreview(
 		grossIncome: number,
 		gigExpense: number,

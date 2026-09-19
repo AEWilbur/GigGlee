@@ -13,7 +13,7 @@
 <section class="page-shell">
 	<div class="page-header">
 		<h1>Forecast</h1>
-		<p>Change the number of extra gigs to see the plan update automatically.</p>
+		<h2>Change the number of extra gigs to see the plan update.</h2>
 	</div>
 
 	<section class="overview-section">
@@ -29,8 +29,8 @@
 			<strong>{additionalGigs}</strong>
 			<div>
 				<label for="extra-gigs">Extra gigs</label>
-				<input id="extra-gigs" type="range" min="0" max="12" bind:value={additionalGigs} />
-				<div class="range-labels"><span>0</span><span>12</span></div>
+				<input id="extra-gigs" type="range" min="0" max="20" bind:value={additionalGigs} />
+				<div class="range-labels"><span>0</span><span>20</span></div>
 			</div>
 		</div>
 
@@ -67,7 +67,6 @@
 	<section class="outlook-section">
 		<div class="section-heading">
 			<div>
-				<h2>Later</h2>
 				<span>Estimated money left over</span>
 			</div>
 		</div>
@@ -93,10 +92,8 @@
 </section>
 
 <style>
-	.page-header p {
-		margin: 0.45rem 0 0;
-		font-size: 0.85rem;
-		color: rgba(45, 35, 64, 0.68);
+	.page-header {
+		font-family: 'Itim', sans-serif;
 	}
 
 	.overview-section,
@@ -124,10 +121,11 @@
 		margin: 0;
 		font-size: 1.15rem;
 		color: #18324a;
+		font-weight: 900;
 	}
 
 	.period-label {
-		font-size: 0.72rem;
+		/* font-size: 0.72rem; */
 		color: #526579;
 	}
 

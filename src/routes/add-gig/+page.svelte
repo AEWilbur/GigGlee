@@ -136,6 +136,7 @@
 
 	.page-header {
 		margin-bottom: 1rem;
+		font-family: 'Itim', sans-serif;
 	}
 
 	h1 {

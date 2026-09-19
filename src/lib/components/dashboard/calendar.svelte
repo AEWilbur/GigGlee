@@ -201,6 +201,7 @@
 		color: #2d2340;
 		font-weight: 700;
 		letter-spacing: -0.02em;
+		font-size: 1.15rem;
 	}
 
 	.section-head {

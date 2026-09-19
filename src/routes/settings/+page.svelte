@@ -17,14 +17,12 @@
 <section class="page-shell">
 	<div class="page-header">
 		<h1>Settings</h1>
-		<p>Update the numbers used for your money summaries.</p>
 	</div>
 
 	<div class="settings-grid">
 		<div class="setting-card green expenses-card">
 			<div>
 				<h2 class="setting-title">Monthly bills</h2>
-				<p>This target is filled before goals get money.</p>
 			</div>
 			<div class="expense-list">
 				{#each account.expenseCategories as category (category.name)}
@@ -44,7 +42,7 @@
 				{/each}
 			</div>
 			<div class="total-row">
-				<span>Total monthly expenses</span>
+				<h2>Total monthly expenses</h2>
 				<strong>${totalMonthlyExpenses.toLocaleString()}</strong>
 			</div>
 		</div>
@@ -76,7 +74,6 @@
 
 			<div class="setting-card blue">
 				<label for="tax-rate">Tax rate</label>
-				<p>The percentage saved for taxes.</p>
 				<div class="rate-input">
 					<input
 						id="tax-rate"
@@ -95,10 +92,8 @@
 </section>
 
 <style>
-	.page-header p {
-		margin: 0.45rem 0 0;
-		font-size: 0.85rem;
-		color: rgba(45, 35, 64, 0.68);
+	.page-header {
+		font-family: 'Itim', sans-serif;
 	}
 
 	.settings-grid {
@@ -159,8 +154,8 @@
 		gap: 1rem;
 		padding-top: 0.8rem;
 		border-top: 1px solid rgba(80, 67, 100, 0.12);
-		font-size: 0.78rem;
-		color: #453a59;
+		font-size: 0.8rem;
+		color: #000000;
 	}
 
 	.total-row strong {

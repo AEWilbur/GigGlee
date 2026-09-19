@@ -51,3 +51,9 @@
 		{@render children()}
 	</main>
 </div>
+
+<style>
+	.site-header {
+		font-family: 'Itim', sans-serif;
+	}
+</style>

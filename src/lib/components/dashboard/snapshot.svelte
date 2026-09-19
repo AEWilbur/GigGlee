@@ -90,6 +90,7 @@
 	}
 
 	.overview-heading {
+		font-family: 'Itim', sans-serif;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
