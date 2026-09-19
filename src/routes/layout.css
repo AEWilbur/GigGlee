@@ -1,0 +1,141 @@
+@import 'tailwindcss';
+
+:global(html, body) {
+	height: 100%;
+}
+
+:global(body) {
+	margin: 0;
+	background: #f5f3ee;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #1d2b36;
+}
+
+:global(*) {
+	box-sizing: border-box;
+}
+
+.app-shell {
+	position: relative;
+	display: flex;
+	min-height: 100vh;
+	background: #f5f3ee;
+}
+
+.skip-link {
+	position: fixed;
+	top: 0.75rem;
+	left: 0.75rem;
+	z-index: 10;
+	padding: 0.55rem 0.75rem;
+	border-radius: 6px;
+	background: #2f6fed;
+	color: white;
+	text-decoration: none;
+	transform: translateY(-180%);
+}
+
+.skip-link:focus {
+	transform: translateY(0);
+}
+
+.site-header {
+	width: 205px;
+	min-height: 100vh;
+	padding: 1rem 0.7rem;
+	border-right: 1px solid #d5dee8;
+	background: #ffffff;
+}
+
+.brand {
+	font-size: 1.7rem;
+	font-weight: 700;
+	letter-spacing: -0.06em;
+	color: #1d2b36;
+	padding: 0.35rem 0.65rem 1.25rem;
+}
+
+.top-nav {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 0.25rem;
+}
+
+.top-nav a {
+	padding: 0.5rem 0.7rem;
+	border-radius: 6px;
+	text-decoration: none;
+	color: #314553;
+	font-size: 0.88rem;
+	transition:
+		background-color 0.2s ease,
+		color 0.2s ease,
+		transform 0.15s ease;
+}
+
+.top-nav a:hover,
+.top-nav a.active {
+	background: #e1efe4;
+	color: #1d2b36;
+}
+
+:global(button),
+:global(input),
+:global(select),
+:global(textarea),
+:global(a) {
+	font: inherit;
+}
+
+:global(button:focus-visible),
+:global(input:focus-visible),
+:global(select:focus-visible),
+:global(textarea:focus-visible),
+:global(a:focus-visible) {
+	outline: 3px solid #2f6fed;
+	outline-offset: 2px;
+}
+
+.page-content {
+	flex: 1;
+	padding: 1.75rem clamp(1rem, 3vw, 3rem);
+}
+
+.page-shell {
+	max-width: 1280px;
+	margin: 0 auto;
+	display: grid;
+	gap: 1.25rem;
+	padding: 0 0 2rem;
+}
+
+.page-header {
+	padding: 0 0 0.25rem;
+}
+
+.page-header h1 {
+	margin: 0;
+	font-size: clamp(1.9rem, 3vw, 2.5rem);
+	letter-spacing: -0.03em;
+	color: #2d2340;
+}
+
+@media (max-width: 800px) {
+	.site-header {
+		width: 100%;
+		min-height: auto;
+		border-right: none;
+		border-bottom: 1px solid #d5dee8;
+	}
+
+	.top-nav {
+		flex-direction: row;
+		align-items: center;
+		flex-wrap: wrap;
+	}
+
+	.app-shell {
+		display: block;
+	}
+}
