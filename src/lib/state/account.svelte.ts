@@ -41,8 +41,6 @@ export type Goal = {
 };
 
 export class Account {
-	private balance: number = $state(0);
-
 	monthlyexpenses: number = $state(0);
 	taxrate: number = $state(0);
 
@@ -63,14 +61,6 @@ export class Account {
 
 	goals: Goal[] = $state([]);
 
-	constructor(initialBalance: number) {
-		this.balance = initialBalance;
-	}
-
-	public getBalance(): number {
-		return this.balance;
-	}
-
 	public addGig(gig: Omit<Gig, 'id'>): void {
 		const plan = this.getPlanPreview(gig.amount, gig.gigExpense ?? 0, gig.date);
 		const newGig: Gig = {
@@ -81,7 +71,6 @@ export class Account {
 		};
 
 		this.gigs = [newGig, ...this.gigs];
-		this.balance += gig.amount;
 
 		this.applyAllocations(newGig.allocations ?? [], 1);
 	}
@@ -98,10 +87,10 @@ export class Account {
 				total + (this.isSameMonth(gig.date, gigDate) ? (gig.plan?.billPayment ?? 0) : 0),
 			0
 		);
-		const taxReserve = netIncome * this.taxrate;
-		const afterTax = Math.max(netIncome - taxReserve, 0);
-		const billPayment = Math.min(afterTax, Math.max(this.monthlyexpenses - billsAlreadyPaid, 0));
-		let remaining = afterTax - billPayment;
+		const billPayment = Math.min(netIncome, Math.max(this.monthlyexpenses - billsAlreadyPaid, 0));
+		const profitAfterBills = netIncome - billPayment;
+		const taxReserve = profitAfterBills * this.taxrate;
+		let remaining = Math.max(profitAfterBills - taxReserve, 0);
 		const reserveTarget = this.monthlyexpenses * this.reserveMonths;
 		const reserveAlreadySaved = this.gigs.reduce(
 			(total, gig) => total + (gig.plan?.slowMonthReserve ?? 0),
@@ -148,9 +137,23 @@ export class Account {
 		if (!existingGig) return;
 
 		this.applyAllocations(existingGig.allocations ?? [], -1);
-		const allocations = this.limitAllocations(changes.allocations ?? []);
-		this.gigs = this.gigs.map((gig) => (gig.id === id ? { ...changes, id, allocations } : gig));
-		this.balance += changes.amount - existingGig.amount;
+		const remainingGigs = this.gigs.filter((gig) => gig.id !== id);
+		this.gigs = remainingGigs;
+
+		const gigExpense = changes.gigExpense ?? existingGig.gigExpense ?? 0;
+		const preview = this.getPlanPreview(changes.amount, gigExpense, changes.date);
+		const allocations = this.limitAllocations(changes.allocations ?? preview.allocations);
+		const goalReserve = allocations.reduce((total, allocation) => total + allocation.amount, 0);
+		const availableForGoals = preview.summary.goalReserve + preview.summary.safeToSpend;
+		const plan: GigPlan = {
+			...preview.summary,
+			gigExpense,
+			goalReserve,
+			safeToSpend: Math.max(availableForGoals - goalReserve, 0)
+		};
+		const updatedGig: Gig = { ...existingGig, ...changes, id, gigExpense, allocations, plan };
+
+		this.gigs = [updatedGig, ...remainingGigs];
 		this.applyAllocations(allocations, 1);
 	}
 
@@ -160,7 +163,6 @@ export class Account {
 		if (!gigToDelete) return;
 
 		this.gigs = this.gigs.filter((gig) => gig.id !== id);
-		this.balance -= gigToDelete.amount;
 		this.applyAllocations(gigToDelete.allocations ?? [], -1);
 	}
 
@@ -171,19 +173,18 @@ export class Account {
 	}
 
 	private limitAllocations(allocations: GigAllocation[]): GigAllocation[] {
-		return allocations
-			.map((allocation) => {
-				const goal = this.goals.find((item) => item.id === allocation.goalId);
-				if (!goal) return null;
+		const limited: GigAllocation[] = [];
 
-				return {
-					goalId: allocation.goalId,
-					amount: Math.min(Math.max(allocation.amount, 0), Math.max(goal.target - goal.saved, 0))
-				};
-			})
-			.filter(
-				(allocation): allocation is GigAllocation => allocation !== null && allocation.amount > 0
-			);
+		for (const allocation of allocations) {
+			const goal = this.goals.find((item) => item.id === allocation.goalId);
+			if (!goal) continue;
+
+			const remaining = Math.max(goal.target - goal.saved, 0);
+			const amount = Math.min(Math.max(allocation.amount, 0), remaining);
+			if (amount > 0) limited.push({ goalId: goal.id, amount });
+		}
+
+		return limited;
 	}
 
 	private adjustGoalSaved(id: number, amount: number): void {
@@ -203,17 +204,6 @@ export class Account {
 
 	public getSlowMonthReserve(): number {
 		return this.gigs.reduce((total, gig) => total + (gig.plan?.slowMonthReserve ?? 0), 0);
-	}
-
-	public getBillsPaid(): number {
-		const referenceDate = this.gigs[0]?.date;
-		if (!referenceDate) return 0;
-
-		return this.gigs.reduce(
-			(total, gig) =>
-				total + (this.isSameMonth(gig.date, referenceDate) ? (gig.plan?.billPayment ?? 0) : 0),
-			0
-		);
 	}
 
 	public getSlowMonthReserveTarget(): number {
@@ -239,21 +229,6 @@ export class Account {
 
 	public deleteGoal(id: number): void {
 		this.goals = this.goals.filter((goal) => goal.id !== id);
-	}
-
-	public saveToGoal(id: number, amount: number): void {
-		this.goals = this.goals.map((goal) => {
-			if (goal.id !== id) return goal;
-
-			const saved = Math.min(goal.saved + Math.max(amount, 0), goal.target);
-			return {
-				...goal,
-				saved,
-				completed: saved >= goal.target,
-				completedAt:
-					saved >= goal.target ? (goal.completedAt ?? new SvelteDate().toISOString()) : undefined
-			};
-		});
 	}
 
 	public getTotalIncome(): number {
@@ -290,24 +265,22 @@ export class Account {
 				sum + (gig.allocations ?? []).reduce((total, allocation) => total + allocation.amount, 0),
 			0
 		);
-		const expenses = this.monthlyexpenses + income * this.taxrate;
+		const taxes = monthGigs.reduce((sum, gig) => sum + (gig.plan?.taxReserve ?? 0), 0);
+		const billsPaid = monthGigs.reduce((sum, gig) => sum + (gig.plan?.billPayment ?? 0), 0);
+		const expenses = billsPaid + taxes;
 
 		return {
 			month: referenceDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
 			income,
 			bills: this.getSlowMonthReserveTarget(),
 			monthlyBills: this.monthlyexpenses,
-			billsPaid: this.getBillsPaid(),
-			taxes: income * this.taxrate,
+			billsPaid,
+			taxes,
 			goalSavings,
 			slowMonthReserve: this.getSlowMonthReserve(),
 			expenses,
 			saved: Math.max(income - expenses, 0)
 		};
-	}
-
-	public getTaxEstimate(): number {
-		return this.getTotalIncome() * this.taxrate;
 	}
 
 	public getSafeToSpend(): number {
@@ -338,6 +311,7 @@ export class Account {
 
 	public getForecast(additionalGigs = 0): {
 		projectedIncome: number;
+		projectedNet: number;
 		bills: number;
 		taxes: number;
 		nextMonth: number;
@@ -355,13 +329,19 @@ export class Account {
 		const extraIncome = averageGig * Math.max(additionalGigs, 0);
 		const extraExpenses = averageGigExpense * Math.max(additionalGigs, 0);
 		const projectedIncome = this.getTotalIncome() + extraIncome;
-		const projectedNet = projectedIncome - extraExpenses;
+		const currentNetIncome = this.gigs.reduce(
+			(total, gig) => total + Math.max(gig.amount - (gig.gigExpense ?? 0), 0),
+			0
+		);
+		const projectedNet = currentNetIncome + extraIncome - extraExpenses;
 		const bills = this.monthlyexpenses;
-		const taxes = projectedNet * this.taxrate;
-		const available = Math.max(projectedNet - taxes - bills, 0);
+		const afterBills = Math.max(projectedNet - bills, 0);
+		const taxes = afterBills * this.taxrate;
+		const available = Math.max(afterBills - taxes, 0);
 
 		return {
 			projectedIncome,
+			projectedNet,
 			bills,
 			taxes,
 			nextMonth: available,
@@ -375,4 +355,4 @@ export class Account {
 	}
 }
 
-export const account = new Account(1247);
+export const account = new Account();

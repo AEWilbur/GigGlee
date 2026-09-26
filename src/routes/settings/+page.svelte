@@ -92,10 +92,6 @@
 </section>
 
 <style>
-	.page-header {
-		font-family: 'Itim', sans-serif;
-	}
-
 	.settings-grid {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(220px, 1fr));
@@ -115,7 +111,7 @@
 		gap: 0.8rem;
 		min-height: 120px;
 		padding: 1rem;
-		border: 1px solid rgba(80, 67, 100, 0.12);
+		border: 1px solid var(--line);
 		border-radius: 8px;
 	}
 
@@ -125,11 +121,11 @@
 	}
 
 	.green {
-		background: #d8f1df;
+		background: var(--sage);
 	}
 
 	.blue {
-		background: #e3ecff;
+		background: var(--blue-wash);
 	}
 
 	.expense-list {
@@ -155,12 +151,12 @@
 		padding-top: 0.8rem;
 		border-top: 1px solid rgba(80, 67, 100, 0.12);
 		font-size: 0.8rem;
-		color: #000000;
+		color: var(--muted);
 	}
 
 	.total-row strong {
 		font-size: 1rem;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	label,
@@ -169,14 +165,14 @@
 		margin: 0;
 		font-size: 0.95rem;
 		font-weight: 700;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	p {
 		margin: 0;
 		font-size: 0.76rem;
 		line-height: 1.4;
-		color: rgba(45, 35, 64, 0.68);
+		color: var(--muted);
 	}
 
 	.money-input,
@@ -184,10 +180,10 @@
 		display: flex;
 		align-items: center;
 		width: min(100%, 150px);
-		border: 1px solid #c9bdd8;
+		border: 1px solid var(--line);
 		border-radius: 0.7rem;
-		background: rgba(255, 255, 255, 0.72);
-		color: rgba(45, 35, 64, 0.7);
+		background: var(--surface);
+		color: var(--muted);
 	}
 
 	.money-input span,
@@ -205,24 +201,24 @@
 		background: transparent;
 		font: inherit;
 		font-weight: 700;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	select {
 		width: 100%;
-		border: 1px solid #c9bdd8;
+		border: 1px solid var(--line);
 		border-radius: 0.7rem;
 		padding: 0.65rem 0.55rem;
-		background: rgba(255, 255, 255, 0.72);
+		background: var(--surface);
 		font: inherit;
 		font-weight: 700;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.reserve-help {
 		font-size: 0.72rem;
 		font-weight: 700;
-		color: #245b9f;
+		color: var(--sage-strong);
 	}
 
 	@media (max-width: 600px) {

@@ -1,17 +1,13 @@
 <script lang="ts">
-	// Import the global stylesheet and favicon for every page
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import '$lib/css/global.css';
 
-	// SvelteKit helpers for route URLs and current page state
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 
-	// This is the layout wrapper around all page content
 	let { children } = $props();
 
-	// Sidebar navigation item list for the main app pages
 	const navItems: ReadonlyArray<{
 		href: '/' | '/add-gig' | '/goals' | '/forecast' | '/settings';
 		label: string;
@@ -25,7 +21,6 @@
 </script>
 
 <svelte:head>
-	<!-- Browser tab icon -->
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
@@ -46,14 +41,7 @@
 		</nav>
 	</header>
 
-	<!-- Main page content area -->
 	<main id="main-content" class="page-content" tabindex="-1">
 		{@render children()}
 	</main>
 </div>
-
-<style>
-	.site-header {
-		font-family: 'Itim', sans-serif;
-	}
-</style>

@@ -40,6 +40,7 @@
 	});
 
 	const selectedGigs = $derived(selectedDate ? gigsForDate(selectedDate) : []);
+	const todayKey = dateKey(new Date());
 	const calendarTitle = $derived(
 		calendarMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
 	);
@@ -74,6 +75,8 @@
 					type="button"
 					class:has-gig={day.gigs.length > 0}
 					class:selected={selectedDate === day.key}
+					class:today={day.key === todayKey}
+					aria-label={`${calendarMonth.toLocaleDateString(undefined, { month: 'long' })} ${day.number}${day.gigs.length ? `, ${day.gigs.length} gigs` : ''}`}
 					onclick={() => (selectedDate = day.key)}
 				>
 					{day.number}
@@ -83,16 +86,20 @@
 		{/each}
 	</div>
 	<div class="calendar-details">
-		{#if selectedDate && selectedGigs.length > 0}
+		{#if selectedDate}
 			<strong>{selectedDate}</strong>
-			{#each selectedGigs as gig (gig.id)}
-				<div class="calendar-gig">
-					<span>{gig.name}</span>
-					<strong>{formatCurrency(gig.amount)}</strong>
-				</div>
-			{/each}
+			{#if selectedGigs.length > 0}
+				{#each selectedGigs as gig (gig.id)}
+					<div class="calendar-gig">
+						<span>{gig.name}</span>
+						<strong>{formatCurrency(gig.amount)}</strong>
+					</div>
+				{/each}
+			{:else}
+				<span>No gigs booked for this day.</span>
+			{/if}
 		{:else}
-			<span>No gig selected.</span>
+			<span>Select a day to see what’s booked.</span>
 		{/if}
 	</div>
 </section>
@@ -100,12 +107,9 @@
 <style>
 	.calendar-card {
 		display: grid;
-		gap: 1rem;
-		padding: 1rem;
-		border: 1px solid #d8e0e8;
-		border-radius: 8px;
-		background: #edf3fb;
-		box-shadow: none;
+		gap: 0.85rem;
+		padding: 1.4rem 0 0;
+		border-top: 1px solid var(--line);
 	}
 
 	.calendar-buttons {
@@ -116,10 +120,10 @@
 	.calendar-buttons button {
 		width: 2rem;
 		height: 2rem;
-		border: 1px solid #cfd9e4;
+		border: 1px solid var(--line);
 		border-radius: 0.55rem;
-		background: white;
-		color: #18324a;
+		background: var(--surface);
+		color: var(--ink);
 		font-size: 1.2rem;
 		line-height: 1;
 		cursor: pointer;
@@ -128,7 +132,7 @@
 	.calendar-grid {
 		display: grid;
 		grid-template-columns: repeat(7, minmax(0, 1fr));
-		gap: 0.35rem;
+		gap: 0.3rem;
 	}
 
 	.weekday {
@@ -136,44 +140,63 @@
 		text-align: center;
 		font-size: 0.65rem;
 		font-weight: 700;
-		color: #526579;
+		color: var(--muted);
 	}
 
 	.calendar-empty,
 	.calendar-grid button {
-		aspect-ratio: 1;
+		height: clamp(3rem, 5vw, 4rem);
 	}
 
 	.calendar-grid button {
 		position: relative;
-		border: 1px solid #d8e0e8;
-		border-radius: 0.6rem;
-		background: rgba(255, 255, 255, 0.72);
-		color: #2d2340;
+		border: 1px solid var(--line);
+		border-radius: 0.7rem;
+		background: var(--surface);
+		color: var(--ink);
 		font: inherit;
-		font-size: 0.78rem;
+		font-size: 0.82rem;
 		cursor: pointer;
+		transition:
+			background-color 0.15s ease,
+			border-color 0.15s ease,
+			transform 0.15s ease;
+	}
+
+	.calendar-grid button:hover {
+		transform: translateY(-1px);
+	}
+
+	.calendar-grid button.today:not(.selected) {
+		border-color: var(--coral);
+		box-shadow: inset 0 0 0 1px var(--coral);
 	}
 
 	.calendar-grid button.has-gig {
-		background: #edf3fb;
+		background: var(--sage);
+		border-color: var(--sage-strong);
 		font-weight: 700;
 	}
 
 	.calendar-grid button.selected,
 	.calendar-grid button:hover {
-		border-color: #2f6fbd;
-		background: #e3ecff;
+		border-color: var(--action);
+		background: var(--blue-wash);
+	}
+
+	.calendar-grid button.today.selected {
+		border-color: var(--coral);
+		background: var(--coral-wash);
 	}
 
 	.calendar-dot {
 		position: absolute;
-		bottom: 0.18rem;
+		bottom: 0.28rem;
 		left: 50%;
 		width: 0.28rem;
 		height: 0.28rem;
 		border-radius: 50%;
-		background: #6d5bb5;
+		background: var(--sage-strong);
 		transform: translateX(-50%);
 	}
 
@@ -181,9 +204,9 @@
 		display: grid;
 		gap: 0.45rem;
 		padding-top: 0.75rem;
-		border-top: 1px solid rgba(80, 67, 100, 0.1);
+		border-top: 1px solid var(--line);
 		font-size: 0.75rem;
-		color: rgba(45, 35, 64, 0.65);
+		color: var(--muted);
 	}
 
 	.calendar-gig {
@@ -192,13 +215,13 @@
 		gap: 1rem;
 		padding: 0.55rem 0.65rem;
 		border-radius: 0.55rem;
-		background: rgba(255, 255, 255, 0.72);
-		color: #2d2340;
+		background: var(--surface-muted);
+		color: var(--ink);
 	}
 
 	h2 {
 		margin: 0;
-		color: #2d2340;
+		color: var(--ink);
 		font-weight: 700;
 		letter-spacing: -0.02em;
 		font-size: 1.15rem;

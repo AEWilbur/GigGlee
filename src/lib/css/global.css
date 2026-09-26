@@ -1,7 +1,31 @@
-@import './_reset.css';
-@import './_themes.css';
 @import '@fontsource/itim';
+
+:root {
+	--paper: #f5f1e8;
+	--surface: #fffdf8;
+	--surface-muted: #ebe6da;
+	--ink: #20241e;
+	--muted: #6f7167;
+	--line: #d8d3c7;
+	--sage: #dcebd5;
+	--sage-strong: #31643e;
+	--blue-wash: #e3ebeb;
+	--blue-ink: #426366;
+	--butter: #f5e8b9;
+	--coral-wash: #f2d6ca;
+	--coral: #a64932;
+	--action: #20241e;
+}
+
 body {
-	background-color: var(--background-color);
-	font-family: sans-serif;
+	background: var(--paper);
+	color: var(--ink);
+	font-family: 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.brand {
+	font-family: 'Itim', Arial, sans-serif;
 }

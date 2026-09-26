@@ -64,7 +64,6 @@
 	>
 		<div>
 			<h2>Add a goal</h2>
-			<p>Choose something you want to save for.</p>
 		</div>
 		<div class="goal-form-fields">
 			<label>
@@ -82,7 +81,7 @@
 
 	<div class="goal-grid">
 		{#each goals as goal, index (goal.id)}
-			<div class="goal-card {index % 3 === 0 ? 'green' : index % 3 === 1 ? 'blue' : 'yellow'}">
+			<div class="goal-card {['green', 'blue', 'yellow'][index % 3]}">
 				<div class="goal-top">
 					<span>{goal.name}</span>
 					<strong>{formatCurrency(goal.target)}</strong>
@@ -140,29 +139,19 @@
 </section>
 
 <style>
-	.page-header {
-		font-family: 'Itim', sans-serif;
-	}
-
 	.add-goal-card {
 		display: grid;
 		gap: 1rem;
 		padding: 1rem;
-		border: 1px solid #ded5e8;
+		border: 1px solid var(--line);
 		border-radius: 8px;
-		background: #e9e4ff;
+		background: var(--surface);
 	}
 
 	.add-goal-card h2 {
 		margin: 0 0 0.25rem;
 		font-size: 1rem;
-		color: #2d2340;
-	}
-
-	.add-goal-card p {
-		margin: 0;
-		font-size: 0.78rem;
-		color: rgba(45, 35, 64, 0.68);
+		color: var(--ink);
 	}
 
 	.goal-form-fields {
@@ -177,24 +166,24 @@
 		gap: 0.35rem;
 		font-size: 0.75rem;
 		font-weight: 700;
-		color: #453a59;
+		color: var(--muted);
 	}
 
 	.goal-form-fields input {
 		min-width: 0;
-		border: 1px solid rgba(80, 67, 100, 0.16);
+		border: 1px solid var(--line);
 		border-radius: 0.7rem;
 		padding: 0.7rem 0.75rem;
-		background: #f8f6fb;
+		background: var(--surface);
 		font: inherit;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.goal-form-fields button {
 		border: 0;
 		border-radius: 0.7rem;
 		padding: 0.72rem 1rem;
-		background: #2f6fbd;
+		background: var(--action);
 		color: white;
 		font: inherit;
 		font-size: 0.8rem;
@@ -204,11 +193,11 @@
 
 	.add-goal-card small {
 		font-size: 0.75rem;
-		color: #245b9f;
+		color: var(--sage-strong);
 	}
 
 	.add-goal-card small.error {
-		color: #9a4b56;
+		color: var(--coral);
 	}
 
 	.goal-grid {
@@ -223,18 +212,18 @@
 		align-content: space-between;
 		min-height: 190px;
 		padding: 1rem;
-		border: 1px solid rgba(80, 67, 100, 0.12);
-		border-radius: 8px;
+		border: 1px solid var(--line);
+		border-radius: 7px 9px 6px 8px;
 	}
 
 	.green {
-		background: #d8f1df;
+		background: var(--sage);
 	}
 	.blue {
-		background: #e3ecff;
+		background: var(--blue-wash);
 	}
 	.yellow {
-		background: #fff0b8;
+		background: var(--butter);
 	}
 
 	.goal-top {
@@ -242,7 +231,7 @@
 		justify-content: space-between;
 		gap: 1rem;
 		font-size: 0.95rem;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.goal-top strong {
@@ -265,8 +254,8 @@
 		border: 0;
 		border-radius: 0.45rem;
 		padding: 0.4rem 0.55rem;
-		background: rgba(255, 255, 255, 0.68);
-		color: #453a59;
+		background: var(--surface);
+		color: var(--ink);
 		font: inherit;
 		font-size: 0.68rem;
 		font-weight: 700;
@@ -274,7 +263,7 @@
 	}
 
 	.goal-actions button.delete {
-		color: #9a4b56;
+		color: var(--coral);
 	}
 
 	.edit-goal-form {
@@ -285,18 +274,18 @@
 
 	.edit-goal-form input {
 		min-width: 0;
-		border: 1px solid rgba(80, 67, 100, 0.14);
+		border: 1px solid var(--line);
 		border-radius: 0.45rem;
 		padding: 0.4rem;
-		background: rgba(255, 255, 255, 0.78);
+		background: var(--surface);
 		font: inherit;
 		font-size: 0.7rem;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.progress {
 		height: 0.7rem;
-		background: rgba(255, 255, 255, 0.5);
+		background: var(--surface-muted);
 		border-radius: 999px;
 		overflow: hidden;
 	}
@@ -304,23 +293,22 @@
 	.progress span {
 		display: block;
 		height: 100%;
-		background: rgba(45, 35, 64, 0.78);
+		background: var(--sage-strong);
 		border-radius: inherit;
 	}
 
 	small {
 		font-size: 0.75rem;
-		color: rgba(45, 35, 64, 0.75);
+		color: var(--muted);
 	}
 
 	.history-section {
 		display: grid;
 		gap: 0.8rem;
 		padding: 1rem;
-		border: 1px solid rgba(80, 67, 100, 0.08);
-		border-radius: 1.2rem;
-		background: rgba(255, 255, 255, 0.52);
-		box-shadow: 0 8px 24px rgba(98, 92, 120, 0.04);
+		border: 1px solid var(--line);
+		border-radius: 8px;
+		background: var(--surface);
 	}
 
 	.section-heading,
@@ -334,12 +322,12 @@
 	.section-heading h2 {
 		margin: 0;
 		font-size: 1rem;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.section-heading span {
 		font-size: 0.72rem;
-		color: rgba(45, 35, 64, 0.62);
+		color: var(--muted);
 	}
 
 	.history-list {
@@ -350,8 +338,8 @@
 	.history-row {
 		padding: 0.75rem;
 		border-radius: 0.7rem;
-		background: #f0f4ea;
-		color: #2d2340;
+		background: var(--sage);
+		color: var(--ink);
 	}
 
 	.history-row div {
@@ -361,7 +349,7 @@
 
 	.history-row small {
 		font-size: 0.7rem;
-		color: rgba(45, 35, 64, 0.62);
+		color: var(--muted);
 	}
 
 	.history-actions {
@@ -374,8 +362,8 @@
 		border: 0;
 		border-radius: 0.45rem;
 		padding: 0.4rem 0.55rem;
-		background: rgba(193, 92, 104, 0.1);
-		color: #9a4b56;
+		background: var(--coral-wash);
+		color: var(--coral);
 		font: inherit;
 		font-size: 0.68rem;
 		font-weight: 700;

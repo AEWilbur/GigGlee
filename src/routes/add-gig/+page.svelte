@@ -8,7 +8,11 @@
 	let notes = $state('');
 	let savedMessage = $state('');
 	const planPreview = $derived(
-		account.getPlanPreview(Number(amountEarned) || 0, Number(gigExpense) || 0)
+		account.getPlanPreview(
+			Number(amountEarned) || 0,
+			Number(gigExpense) || 0,
+			gigDate || new Date().toISOString()
+		)
 	);
 
 	function saveGig() {
@@ -128,21 +132,20 @@
 
 	.card {
 		width: min(100%, 640px);
-		background: #e3ecff;
-		border: 1px solid #c5d5e7;
+		background: var(--surface);
+		border: 1px solid var(--line);
 		border-radius: 8px;
 		padding: 1.25rem;
 	}
 
 	.page-header {
 		margin-bottom: 1rem;
-		font-family: 'Itim', sans-serif;
 	}
 
 	h1 {
 		margin: 0;
 		font-size: clamp(2rem, 3vw, 2.6rem);
-		color: #2d2340;
+		color: var(--ink);
 		letter-spacing: -0.05em;
 	}
 
@@ -155,9 +158,9 @@
 		display: grid;
 		gap: 0.8rem;
 		padding: 0.9rem;
-		border: 1px solid rgba(80, 67, 100, 0.1);
+		border: 1px solid var(--line);
 		border-radius: 6px;
-		background: #fff0b8;
+		background: var(--surface-muted);
 	}
 
 	.allocation-header {
@@ -170,19 +173,19 @@
 	.allocation-header h2 {
 		margin: 0 0 0.2rem;
 		font-size: 0.95rem;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.allocation-header p {
 		margin: 0;
 		font-size: 0.75rem;
-		color: rgba(45, 35, 64, 0.68);
+		color: var(--muted);
 	}
 
 	.allocation-header > strong {
 		white-space: nowrap;
 		font-size: 0.8rem;
-		color: #245b9f;
+		color: var(--sage-strong);
 	}
 
 	.plan-list {
@@ -195,20 +198,20 @@
 		justify-content: space-between;
 		gap: 1rem;
 		padding: 0.45rem 0;
-		border-bottom: 1px solid rgba(80, 67, 100, 0.08);
+		border-bottom: 1px solid var(--line);
 		font-size: 0.75rem;
-		color: #453a59;
+		color: var(--muted);
 	}
 
 	.plan-list strong {
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.plan-list .safe-line {
 		padding: 0.6rem;
 		border: 0;
 		border-radius: 0.5rem;
-		background: #d8f1df;
+		background: var(--sage);
 		font-weight: 700;
 	}
 
@@ -216,22 +219,22 @@
 		display: grid;
 		gap: 0.45rem;
 		font-size: 0.82rem;
-		color: #453a59;
+		color: var(--muted);
 	}
 
 	input,
 	textarea {
-		border: 1px solid rgba(80, 67, 100, 0.18);
-		background: #f5f3fb;
+		border: 1px solid var(--line);
+		background: var(--surface);
 		border-radius: 0.8rem;
 		padding: 0.8rem 0.9rem;
 		font: inherit;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	button {
 		border: none;
-		background: #2463d4;
+		background: var(--action);
 		color: white;
 		padding: 0.85rem 1rem;
 		border-radius: 0.9rem;
@@ -243,6 +246,6 @@
 	.save-message {
 		margin: 0;
 		font-size: 0.9rem;
-		color: #2d2340;
+		color: var(--ink);
 	}
 </style>

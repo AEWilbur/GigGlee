@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { account, type GigAllocation } from '$lib/state/account.svelte';
 	import Calendar from '$lib/components/dashboard/calendar.svelte';
-	import Snapshot from '$lib/components/dashboard/snapshot.svelte';
+	import MoneyOverview from '$lib/components/dashboard/money-overview.svelte';
 
 	const formatCurrency = (value: number) =>
 		`$${Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
@@ -23,6 +24,7 @@
 	let editGigName = $state('');
 	let editGigDate = $state('');
 	let editGigAmount = $state(0);
+	let editGigExpense = $state(0);
 	let editGigNotes = $state('');
 	let editAllocations = $state<Record<number, number>>({});
 	let editMessage = $state('');
@@ -37,6 +39,7 @@
 		editGigName = gig.name;
 		editGigDate = gig.date;
 		editGigAmount = gig.amount;
+		editGigExpense = gig.gigExpense ?? 0;
 		editGigNotes = gig.notes ?? '';
 		editAllocations = Object.fromEntries(
 			(gig.allocations ?? []).map((allocation) => [allocation.goalId, allocation.amount])
@@ -64,6 +67,7 @@
 			name: editGigName.trim() || 'New Gig',
 			date: editGigDate || new Date().toISOString().slice(0, 10),
 			amount: Number(editGigAmount) || 0,
+			gigExpense: Number(editGigExpense) || 0,
 			notes: editGigNotes.trim() || undefined,
 			allocations
 		});
@@ -83,14 +87,12 @@
 </script>
 
 <div class="dashboard-shell">
-	<!-- Main dashboard panel -->
 	<section class="main-panel">
-		<Snapshot />
+		<MoneyOverview />
 
 		<Calendar />
 	</section>
 
-	<!-- Sidebar list of upcoming gigs -->
 	<aside class="side-panel">
 		<div class="section-head">
 			<h2>Upcoming Gigs</h2>
@@ -120,8 +122,9 @@
 						}}
 					>
 						<label>Name <input type="text" bind:value={editGigName} /></label>
-						<label>Date <input type="text" bind:value={editGigDate} /></label>
+						<label>Date <input type="date" bind:value={editGigDate} /></label>
 						<label>Amount <input type="number" min="0" bind:value={editGigAmount} /></label>
+						<label>Expenses <input type="number" min="0" bind:value={editGigExpense} /></label>
 						<label>Notes <input type="text" bind:value={editGigNotes} /></label>
 						<div class="allocation-editor">
 							<strong>${Math.max(editAmountLeft, 0).toLocaleString()} left to allocate</strong>
@@ -146,7 +149,10 @@
 				{/if}
 			{/each}
 			{#if upcomingGigs.length === 0}
-				<p class="empty-gigs">No upcoming gigs.</p>
+				<div class="empty-gigs">
+					<p>Your next gig will show up here.</p>
+					<a href={resolve('/add-gig')}>Add your first gig <span aria-hidden="true">↗</span></a>
+				</div>
 			{/if}
 		</div>
 	</aside>
@@ -156,23 +162,28 @@
 	.dashboard-shell {
 		display: grid;
 		grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr);
-		gap: 1rem;
+		gap: clamp(1.5rem, 3vw, 2.5rem);
 		max-width: 1250px;
 		margin: 0 auto;
 	}
 
 	.main-panel,
 	.side-panel {
-		background: #ffffff;
-		border: 1px solid #ded5e8;
-		border-radius: 8px;
-		padding: 1.1rem;
+		min-width: 0;
 	}
 
 	.main-panel {
-		display: flex;
-		flex-direction: column;
-		gap: 1.1rem;
+		padding: 0;
+	}
+
+	.side-panel {
+		padding: 0.65rem 0 0;
+		border-top: 2px solid var(--ink);
+	}
+
+	.side-panel .section-head {
+		padding: 0.75rem 0 1rem;
+		border-bottom: 1px solid var(--line);
 	}
 
 	.section-head {
@@ -182,154 +193,12 @@
 		padding: 0 0 0.2rem;
 	}
 
-	h1,
 	h2 {
 		margin: 0;
-		color: #2d2340;
+		color: var(--ink);
 		font-weight: 700;
 		letter-spacing: -0.02em;
-	}
-
-	h1 {
-		font-size: clamp(1.8rem, 2vw, 2.25rem);
-	}
-
-	h2 {
 		font-size: 1.15rem;
-	}
-
-	.overview-card {
-		display: grid;
-		gap: 1rem;
-		padding: 1.1rem;
-		border: 1px solid #c5d5e7;
-		border-radius: 8px;
-		background: #e1efe4;
-	}
-
-	.overview-heading {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		padding-bottom: 1rem;
-		border-bottom: 1px solid #e4dfeb;
-	}
-
-	.overview-heading h1 {
-		font-size: clamp(1.8rem, 3vw, 2.3rem);
-	}
-
-	.safe-amount {
-		display: grid;
-		gap: 0.15rem;
-		text-align: right;
-	}
-
-	.safe-amount span {
-		font-size: 0.72rem;
-		color: rgba(45, 35, 64, 0.65);
-	}
-
-	.safe-amount strong {
-		font-size: clamp(1.7rem, 4vw, 2.7rem);
-		color: #2f8f5b;
-	}
-
-	.overview-stats {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 0.5rem;
-	}
-
-	.overview-stats div {
-		display: grid;
-		gap: 0.2rem;
-		padding: 0.65rem;
-		border-radius: 6px;
-		border: 1px solid rgba(80, 67, 100, 0.1);
-		background: rgba(255, 255, 255, 0.82);
-	}
-
-	.overview-stats span {
-		font-size: 0.68rem;
-		color: rgba(45, 35, 64, 0.65);
-	}
-
-	.overview-stats strong {
-		font-size: 0.95rem;
-		color: #2d2340;
-	}
-
-	.progress-heading {
-		margin-bottom: 1rem;
-	}
-
-	.progress-heading > strong {
-		font-size: 0.82rem;
-		color: #2d2340;
-	}
-
-	.progress-heading h2 {
-		font-size: 1.15rem;
-	}
-
-	.saved-line {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		margin-bottom: 0.8rem;
-		font-size: 0.76rem;
-		color: rgba(45, 35, 64, 0.7);
-	}
-
-	.saved-line strong {
-		color: #2d2340;
-	}
-
-	.progress-list {
-		display: grid;
-		gap: 0.75rem;
-	}
-
-	.progress-item {
-		display: grid;
-		gap: 0.35rem;
-	}
-
-	.progress-item > div:first-child {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
-		font-size: 0.76rem;
-		color: rgba(45, 35, 64, 0.72);
-	}
-
-	.progress-item strong {
-		color: #2d2340;
-	}
-
-	.progress-track {
-		height: 0.55rem;
-		overflow: hidden;
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.65);
-	}
-
-	.progress-track span {
-		display: block;
-		height: 100%;
-		border-radius: inherit;
-	}
-
-	.bills-bar {
-		background: #3c9a70;
-	}
-	.reserve-bar {
-		background: #8b7a55;
-	}
-	.goals-bar {
-		background: #2f8f5b;
 	}
 
 	.gig-list {
@@ -339,10 +208,25 @@
 	}
 
 	.empty-gigs {
-		margin: 0;
-		padding: 1rem 0.5rem;
+		margin: 0.4rem 0 0;
+		padding: 1.1rem 0.25rem;
+		font-size: 0.86rem;
+		color: var(--muted);
+	}
+
+	.empty-gigs p {
+		margin: 0 0 0.65rem;
+	}
+
+	.empty-gigs a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		color: var(--sage-strong);
 		font-size: 0.8rem;
-		color: #526579;
+		font-weight: 700;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 3px;
 	}
 
 	.gig-row {
@@ -350,12 +234,10 @@
 		justify-content: space-between;
 		align-items: center;
 		gap: 1rem;
-		background: #f5f5f2;
-		border: 1px solid #c9d8e8;
-		border-radius: 6px;
-		padding: 0.8rem 0.75rem;
+		padding: 0.9rem 0;
+		border-bottom: 1px solid var(--line);
 		font-size: 0.9rem;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.gig-row div {
@@ -366,7 +248,7 @@
 
 	.gig-row span {
 		font-size: 0.72rem;
-		color: rgba(45, 35, 64, 0.7);
+		color: var(--muted);
 	}
 
 	.gig-row strong {
@@ -383,11 +265,11 @@
 
 	.gig-actions button,
 	.editor-actions button {
-		border: 1px solid #c9bdd8;
+		border: 1px solid var(--line);
 		border-radius: 0.5rem;
 		padding: 0.4rem 0.55rem;
-		background: rgba(125, 103, 216, 0.1);
-		color: #245b9f;
+		background: var(--blue-wash);
+		color: var(--blue-ink);
 		font: inherit;
 		font-size: 0.68rem;
 		font-weight: 700;
@@ -395,35 +277,34 @@
 	}
 
 	.gig-actions button.delete-button {
-		background: #fff0f0;
-		color: #a44d4d;
+		background: var(--coral-wash);
+		color: var(--coral);
 	}
 
 	.gig-editor {
 		display: grid;
 		gap: 0.6rem;
 		padding: 0.8rem;
-		border: 1px solid rgba(80, 67, 100, 0.08);
-		border-radius: 0.9rem;
-		background: #fffaf0;
+		border-top: 1px solid var(--line);
+		background: var(--surface-muted);
 	}
 
 	.gig-editor > label {
 		display: grid;
 		gap: 0.25rem;
 		font-size: 0.7rem;
-		color: #453a59;
+		color: var(--muted);
 	}
 
 	.gig-editor input {
 		min-width: 0;
-		border: 1px solid rgba(80, 67, 100, 0.14);
+		border: 1px solid var(--line);
 		border-radius: 0.5rem;
 		padding: 0.45rem;
 		background: white;
 		font: inherit;
 		font-size: 0.75rem;
-		color: #2d2340;
+		color: var(--ink);
 	}
 
 	.allocation-editor {
@@ -431,12 +312,12 @@
 		gap: 0.45rem;
 		padding: 0.65rem;
 		border-radius: 0.65rem;
-		background: rgba(223, 238, 207, 0.55);
+		background: var(--sage);
 	}
 
 	.allocation-editor > strong {
 		font-size: 0.75rem;
-		color: #245b9f;
+		color: var(--sage-strong);
 	}
 
 	.allocation-editor label {
@@ -445,7 +326,7 @@
 		justify-content: space-between;
 		gap: 0.5rem;
 		font-size: 0.7rem;
-		color: #453a59;
+		color: var(--muted);
 	}
 
 	.allocation-editor label input {
@@ -458,32 +339,17 @@
 	}
 
 	.editor-actions button:first-child {
-		background: #2f6fbd;
+		background: var(--action);
 		color: white;
 	}
 
 	.edit-error {
 		font-size: 0.72rem;
-		color: #9a4b56;
+		color: var(--coral);
 	}
 
 	@media (max-width: 900px) {
 		.dashboard-shell {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	@media (max-width: 620px) {
-		.overview-heading {
-			align-items: flex-start;
-			flex-direction: column;
-		}
-
-		.safe-amount {
-			text-align: left;
-		}
-
-		.overview-stats {
 			grid-template-columns: 1fr;
 		}
 	}
