@@ -82,8 +82,8 @@ export class Account {
 		gigExpense: number,
 		gigDate = new SvelteDate().toISOString()
 	): { allocations: GigAllocation[]; summary: GigPlan } {
-		// const netIncome = Math.max(grossIncome - Math.max(gigExpense, 0), 0);
-		const netIncome = grossIncome - Math.max(gigExpense, 0);
+		const netIncome = Math.max(grossIncome - Math.max(gigExpense, 0), 0);
+		// const netIncome = grossIncome - Math.max(gigExpense, 0);
 		const billsAlreadyPaid = this.gigs.reduce(
 			(total, gig) =>
 				total + (this.isSameMonth(gig.date, gigDate) ? (gig.plan?.billPayment ?? 0) : 0),

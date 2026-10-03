@@ -113,7 +113,6 @@
 		padding: 1rem;
 		border: 1px solid var(--line);
 		border-radius: 4px;
-		width:;
 	}
 
 	.expenses-card {
