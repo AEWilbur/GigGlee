@@ -43,6 +43,7 @@ export type Goal = {
 export class Account {
 	monthlyexpenses: number = $state(0);
 	taxrate: number = $state(0);
+	username: string = $state('');
 
 	goalAllocationPercent: number = $state(60);
 	reserveMonths: number = $state(3);
@@ -81,16 +82,20 @@ export class Account {
 		gigExpense: number,
 		gigDate = new SvelteDate().toISOString()
 	): { allocations: GigAllocation[]; summary: GigPlan } {
-		const netIncome = Math.max(grossIncome - Math.max(gigExpense, 0), 0);
+		// const netIncome = Math.max(grossIncome - Math.max(gigExpense, 0), 0);
+		const netIncome = grossIncome - Math.max(gigExpense, 0);
 		const billsAlreadyPaid = this.gigs.reduce(
 			(total, gig) =>
 				total + (this.isSameMonth(gig.date, gigDate) ? (gig.plan?.billPayment ?? 0) : 0),
 			0
 		);
-		const billPayment = Math.min(netIncome, Math.max(this.monthlyexpenses - billsAlreadyPaid, 0));
-		const profitAfterBills = netIncome - billPayment;
-		const taxReserve = profitAfterBills * this.taxrate;
-		let remaining = Math.max(profitAfterBills - taxReserve, 0);
+		const taxReserve = netIncome * this.taxrate;
+		const afterTaxIncome = Math.max(netIncome - taxReserve, 0);
+		const billPayment = Math.min(
+			afterTaxIncome,
+			Math.max(this.monthlyexpenses - billsAlreadyPaid, 0)
+		);
+		let remaining = Math.max(afterTaxIncome - billPayment, 0);
 		const reserveTarget = this.monthlyexpenses * this.reserveMonths;
 		const reserveAlreadySaved = this.gigs.reduce(
 			(total, gig) => total + (gig.plan?.slowMonthReserve ?? 0),

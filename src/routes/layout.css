@@ -6,7 +6,7 @@ body {
 body {
 	margin: 0;
 	background: var(--paper);
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: 'Helvetica Neue', Helvetica, sans-serif;
 	color: var(--ink);
 }
 
@@ -39,22 +39,21 @@ body {
 }
 
 .site-header {
-	width: 205px;
+	width: 204px;
 	min-height: 100vh;
 	position: sticky;
 	top: 0;
 	align-self: flex-start;
-	padding: 1.5rem 0.7rem;
+	padding: 1.4rem 0.7rem;
 	border-right: 1px solid var(--line);
-	background: var(--paper);
+	background: var(--surface);
 }
 
 .brand {
-	font-size: 1.75rem;
+	font-size: 1.8rem;
 	font-weight: 700;
-	letter-spacing: -0.06em;
-	color: var(--ink);
-	padding: 0.35rem 0.65rem 2.5rem;
+	color: var(--sage-strong);
+	padding: 0.25rem 0.65rem 1.7rem;
 }
 
 .top-nav {
@@ -65,21 +64,27 @@ body {
 }
 
 .top-nav a {
-	padding: 0.5rem 0.7rem;
-	border-radius: 6px;
+	padding: 0.55rem 0.65rem;
+	border-left: 3px solid transparent;
+	border-radius: 3px;
 	text-decoration: none;
 	color: var(--muted);
 	font-size: 0.88rem;
 	transition:
 		background-color 0.2s ease,
-		color 0.2s ease,
-		transform 0.15s ease;
+		color 0.2s ease;
 }
 
-.top-nav a:hover,
+.top-nav a:hover {
+	background: var(--blue-wash);
+	color: var(--ink);
+}
+
 .top-nav a.active {
-	background: var(--ink);
-	color: var(--paper);
+	border-left-color: var(--coral);
+	background: var(--sage);
+	color: var(--ink);
+	font-weight: 700;
 }
 
 button,
@@ -101,7 +106,7 @@ a:focus-visible {
 
 .page-content {
 	flex: 1;
-	padding: 2.5rem clamp(1rem, 4vw, 4.5rem);
+	padding: 2rem clamp(1rem, 4vw, 3.5rem);
 }
 
 .page-shell {
@@ -119,7 +124,6 @@ a:focus-visible {
 .page-header h1 {
 	margin: 0;
 	font-size: clamp(1.9rem, 3vw, 2.5rem);
-	letter-spacing: -0.03em;
 	color: var(--ink);
 }
 

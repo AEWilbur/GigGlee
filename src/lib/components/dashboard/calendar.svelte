@@ -99,7 +99,7 @@
 				<span>No gigs booked for this day.</span>
 			{/if}
 		{:else}
-			<span>Select a day to see what’s booked.</span>
+			<span>Click a day to see what is booked.</span>
 		{/if}
 	</div>
 </section>
@@ -121,7 +121,7 @@
 		width: 2rem;
 		height: 2rem;
 		border: 1px solid var(--line);
-		border-radius: 0.55rem;
+		border-radius: 3px;
 		background: var(--surface);
 		color: var(--ink);
 		font-size: 1.2rem;
@@ -151,7 +151,7 @@
 	.calendar-grid button {
 		position: relative;
 		border: 1px solid var(--line);
-		border-radius: 0.7rem;
+		border-radius: 3px;
 		background: var(--surface);
 		color: var(--ink);
 		font: inherit;
@@ -214,7 +214,7 @@
 		justify-content: space-between;
 		gap: 1rem;
 		padding: 0.55rem 0.65rem;
-		border-radius: 0.55rem;
+		border-radius: 3px;
 		background: var(--surface-muted);
 		color: var(--ink);
 	}

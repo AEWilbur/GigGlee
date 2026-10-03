@@ -49,76 +49,80 @@
 				saveGig();
 			}}
 		>
-			<label>
-				<span>Gig name</span>
-				<input type="text" placeholder="e.g. Wedding ceremony" bind:value={gigName} />
-			</label>
+			<div class="gig-form-fields">
+				<label>
+					<span>Gig name</span>
+					<input type="text" placeholder="e.g. Wedding ceremony" bind:value={gigName} />
+				</label>
 
-			<label>
-				<span>Date</span>
-				<input type="date" bind:value={gigDate} />
-			</label>
+				<label>
+					<span>Date</span>
+					<input type="date" bind:value={gigDate} />
+				</label>
 
-			<label>
-				<span>Amount earned</span>
-				<input type="number" min="0" placeholder="$0" bind:value={amountEarned} />
-			</label>
+				<label>
+					<span>Amount earned</span>
+					<input type="number" min="0" placeholder="$0" bind:value={amountEarned} />
+				</label>
 
-			<label>
-				<span>Gig expenses</span>
-				<input type="number" min="0" placeholder="$0" bind:value={gigExpense} />
-			</label>
+				<label>
+					<span>Gig expenses</span>
+					<input type="number" min="0" placeholder="$0" bind:value={gigExpense} />
+				</label>
 
-			<label>
-				<span>Notes (optional)</span>
-				<textarea rows="4" placeholder="Add a note about this gig" bind:value={notes}></textarea>
-			</label>
+				<label>
+					<span>Notes (optional)</span>
+					<textarea rows="4" placeholder="Add a note about this gig" bind:value={notes}></textarea>
+				</label>
+			</div>
 
-			<section class="allocation-section">
-				<div class="allocation-header">
-					<div>
-						<h2>Plan for this gig</h2>
-						<p>Bills come first, then taxes, goals, and safe-to-spend money.</p>
+			<div>
+				<section class="allocation-section">
+					<div class="allocation-header">
+						<div>
+							<h2>Where the money goes</h2>
+							<p>This is a rough split based on your settings.</p>
+						</div>
+						<strong>{Math.round(account.goalAllocationPercent)}% to goals</strong>
 					</div>
-					<strong>{Math.round(account.goalAllocationPercent)}% to goals</strong>
-				</div>
-				<div class="plan-list">
-					<div>
-						<span>Net income</span><strong>${planPreview.summary.netIncome.toLocaleString()}</strong
-						>
+					<div class="plan-list">
+						<div>
+							<span>Net income</span><strong
+								>${planPreview.summary.netIncome.toLocaleString()}</strong
+							>
+						</div>
+						<div>
+							<span>Tax reserve</span><strong
+								>${planPreview.summary.taxReserve.toLocaleString()}</strong
+							>
+						</div>
+						<div>
+							<span>Bills paid</span><strong
+								>${planPreview.summary.billPayment.toLocaleString()}</strong
+							>
+						</div>
+						<div>
+							<span>Slow-month reserve</span><strong
+								>${planPreview.summary.slowMonthReserve.toLocaleString()}</strong
+							>
+						</div>
+						<div>
+							<span>Goal savings</span><strong
+								>${planPreview.summary.goalReserve.toLocaleString()}</strong
+							>
+						</div>
+						<div class="safe-line">
+							<span>Safe to spend</span><strong
+								>${planPreview.summary.safeToSpend.toLocaleString()}</strong
+							>
+						</div>
 					</div>
-					<div>
-						<span>Tax reserve</span><strong
-							>${planPreview.summary.taxReserve.toLocaleString()}</strong
-						>
-					</div>
-					<div>
-						<span>Bills paid</span><strong
-							>${planPreview.summary.billPayment.toLocaleString()}</strong
-						>
-					</div>
-					<div>
-						<span>Slow-month reserve</span><strong
-							>${planPreview.summary.slowMonthReserve.toLocaleString()}</strong
-						>
-					</div>
-					<div>
-						<span>Goal savings</span><strong
-							>${planPreview.summary.goalReserve.toLocaleString()}</strong
-						>
-					</div>
-					<div class="safe-line">
-						<span>Safe to spend</span><strong
-							>${planPreview.summary.safeToSpend.toLocaleString()}</strong
-						>
-					</div>
-				</div>
-			</section>
-
-			<button type="submit">Save to Spend</button>
-			{#if savedMessage}
-				<p class="save-message">{savedMessage}</p>
-			{/if}
+				</section>
+				<button type="submit">Save gig</button>
+				{#if savedMessage}
+					<p class="save-message">{savedMessage}</p>
+				{/if}
+			</div>
 		</form>
 	</div>
 </section>
@@ -131,10 +135,10 @@
 	}
 
 	.card {
-		width: min(100%, 640px);
+		width: 100%;
 		background: var(--surface);
 		border: 1px solid var(--line);
-		border-radius: 8px;
+		border-radius: 4px;
 		padding: 1.25rem;
 	}
 
@@ -150,8 +154,12 @@
 	}
 
 	.gig-form {
-		display: grid;
+		display: flex;
 		gap: 1rem;
+	}
+
+	.gig-form > :nth-child(1) {
+		flex-grow: 1;
 	}
 
 	.allocation-section {
@@ -217,16 +225,19 @@
 
 	label {
 		display: grid;
-		gap: 0.45rem;
+		gap: 0.25rem;
 		font-size: 0.82rem;
 		color: var(--muted);
+		> span {
+			font-weight: 700;
+		}
 	}
 
 	input,
 	textarea {
 		border: 1px solid var(--line);
 		background: var(--surface);
-		border-radius: 0.8rem;
+		border-radius: 4px;
 		padding: 0.8rem 0.9rem;
 		font: inherit;
 		color: var(--ink);
@@ -237,15 +248,24 @@
 		background: var(--action);
 		color: white;
 		padding: 0.85rem 1rem;
-		border-radius: 0.9rem;
+		border-radius: 4px;
 		font: inherit;
 		font-weight: 700;
 		cursor: pointer;
+		width: 100%;
+		margin: 1rem 0 0;
 	}
 
 	.save-message {
 		margin: 0;
 		font-size: 0.9rem;
 		color: var(--ink);
+		margin-top: 0.5rem;
+	}
+
+	.gig-form-fields {
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
 	}
 </style>

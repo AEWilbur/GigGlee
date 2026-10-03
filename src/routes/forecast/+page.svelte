@@ -17,7 +17,7 @@
 		<div class="section-heading">
 			<div>
 				<h2>Extra gigs</h2>
-				<span>Plan with {additionalGigs} more</span>
+				<span>Adding {additionalGigs} more gigs</span>
 			</div>
 			<span class="period-label">Average gig: {formatCurrency(forecast.averageGig)}</span>
 		</div>
@@ -85,7 +85,7 @@
 	.overview-section,
 	.outlook-section {
 		border: 1px solid var(--line);
-		border-radius: 8px;
+		border-radius: 4px;
 		padding: 1rem;
 		box-shadow: none;
 	}
@@ -121,7 +121,7 @@
 		align-items: center;
 		gap: 1rem;
 		padding: 0.8rem;
-		border-radius: 0.9rem;
+		border-radius: 4px;
 		background: var(--surface-muted);
 	}
 
@@ -155,7 +155,7 @@
 		display: grid;
 		gap: 0.25rem;
 		padding: 1.2rem;
-		border-radius: 0.9rem;
+		border-radius: 4px;
 		background: var(--sage);
 	}
 
@@ -173,7 +173,7 @@
 	.bar {
 		height: 0.7rem;
 		background: rgba(255, 255, 255, 0.6);
-		border-radius: 999px;
+		border-radius: 2px;
 		overflow: hidden;
 		margin-top: 0.8rem;
 	}
@@ -200,7 +200,7 @@
 		min-height: 90px;
 		padding: 0.9rem;
 		border: 1px solid var(--line);
-		border-radius: 0.9rem;
+		border-radius: 4px;
 		background: var(--surface);
 	}
 

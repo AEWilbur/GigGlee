@@ -2,6 +2,8 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import '$lib/css/global.css';
+	import { account } from '$lib/state/account.svelte';
+	import Login from '$lib/components/login.svelte';
 
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
@@ -16,7 +18,7 @@
 		{ href: '/add-gig', label: 'Add Gig' },
 		{ href: '/goals', label: 'Goals' },
 		{ href: '/forecast', label: 'Forecast' },
-		{ href: '/settings', label: 'Settings' }
+		{ href: '/settings', label: 'My Info' }
 	];
 </script>
 
@@ -41,7 +43,11 @@
 		</nav>
 	</header>
 
-	<main id="main-content" class="page-content" tabindex="-1">
-		{@render children()}
-	</main>
+	{#if !account.username}
+		<Login />
+	{:else}
+		<main id="main-content" class="page-content" tabindex="-1">
+			{@render children()}
+		</main>
+	{/if}
 </div>

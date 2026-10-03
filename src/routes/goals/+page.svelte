@@ -63,7 +63,7 @@
 		}}
 	>
 		<div>
-			<h2>Add a goal</h2>
+			<h2>New goal</h2>
 		</div>
 		<div class="goal-form-fields">
 			<label>
@@ -144,7 +144,7 @@
 		gap: 1rem;
 		padding: 1rem;
 		border: 1px solid var(--line);
-		border-radius: 8px;
+		border-radius: 4px;
 		background: var(--surface);
 	}
 
@@ -181,7 +181,7 @@
 
 	.goal-form-fields button {
 		border: 0;
-		border-radius: 0.7rem;
+		border-radius: 4px;
 		padding: 0.72rem 1rem;
 		background: var(--action);
 		color: white;
@@ -213,7 +213,7 @@
 		min-height: 190px;
 		padding: 1rem;
 		border: 1px solid var(--line);
-		border-radius: 7px 9px 6px 8px;
+		border-radius: 4px;
 	}
 
 	.green {
@@ -307,7 +307,7 @@
 		gap: 0.8rem;
 		padding: 1rem;
 		border: 1px solid var(--line);
-		border-radius: 8px;
+		border-radius: 4px;
 		background: var(--surface);
 	}
 

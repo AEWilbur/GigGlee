@@ -16,7 +16,7 @@
 
 <section class="page-shell">
 	<div class="page-header">
-		<h1>Settings</h1>
+		<h1>My Info</h1>
 	</div>
 
 	<div class="settings-grid">
@@ -112,7 +112,8 @@
 		min-height: 120px;
 		padding: 1rem;
 		border: 1px solid var(--line);
-		border-radius: 8px;
+		border-radius: 4px;
+		width:;
 	}
 
 	.expenses-card {
@@ -181,7 +182,7 @@
 		align-items: center;
 		width: min(100%, 150px);
 		border: 1px solid var(--line);
-		border-radius: 0.7rem;
+		border-radius: 4px;
 		background: var(--surface);
 		color: var(--muted);
 	}
@@ -207,7 +208,7 @@
 	select {
 		width: 100%;
 		border: 1px solid var(--line);
-		border-radius: 0.7rem;
+		border-radius: 4px;
 		padding: 0.65rem 0.55rem;
 		background: var(--surface);
 		font: inherit;
