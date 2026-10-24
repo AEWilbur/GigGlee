@@ -5,6 +5,12 @@
 		`$${Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 	const goals = $derived(account.getGoalProgress());
 	const completedGoals = $derived(account.getCompletedGoals());
+	const totalSaved = $derived(
+		[...goals, ...completedGoals].reduce((total, goal) => total + goal.saved, 0)
+	);
+	const totalRemaining = $derived(
+		goals.reduce((total, goal) => total + Math.max(goal.target - goal.saved, 0), 0)
+	);
 	let goalName = $state('');
 	let goalTarget = $state(0);
 	let goalMessage = $state('');
@@ -24,7 +30,7 @@
 		account.addGoal(name, target);
 		goalName = '';
 		goalTarget = 0;
-		goalMessage = `${name} added to your goals.`;
+		goalMessage = `${name} added to your saving goals.`;
 	}
 
 	function startEditing(goal: (typeof goals)[number]): void {
@@ -52,7 +58,26 @@
 
 <section class="page-shell">
 	<div class="page-header">
-		<h1>My goals</h1>
+		<h1>Saving goals</h1>
+	</div>
+
+	<div class="goal-summary" aria-label="Saving goal summary">
+		<div>
+			<span>Saved so far</span>
+			<strong>{formatCurrency(totalSaved)}</strong>
+		</div>
+		<div>
+			<span>Still to save</span>
+			<strong>{formatCurrency(totalRemaining)}</strong>
+		</div>
+		<div>
+			<span>In progress</span>
+			<strong>{goals.length}</strong>
+		</div>
+		<div>
+			<span>Completed</span>
+			<strong>{completedGoals.length}</strong>
+		</div>
 	</div>
 
 	<form
@@ -63,18 +88,18 @@
 		}}
 	>
 		<div>
-			<h2>New goal</h2>
+			<h2>New saving goal</h2>
 		</div>
 		<div class="goal-form-fields">
 			<label>
-				<span>Goal name</span>
+				<span>Saving goal name</span>
 				<input type="text" placeholder="e.g. New laptop" bind:value={goalName} />
 			</label>
 			<label>
 				<span>Target amount</span>
 				<input type="number" min="1" placeholder="$0" bind:value={goalTarget} />
 			</label>
-			<button type="submit">Add Goal</button>
+			<button type="submit">Add saving goal</button>
 		</div>
 		{#if goalMessage}<small class:error={goalMessage.startsWith('Add')}>{goalMessage}</small>{/if}
 	</form>
@@ -88,6 +113,10 @@
 				</div>
 				<div class="progress">
 					<span style="width: {goal.percent}%"></span>
+				</div>
+				<div class="goal-amounts">
+					<span>{formatCurrency(goal.saved)} saved</span>
+					<span>{formatCurrency(Math.max(goal.target - goal.saved, 0))} to go</span>
 				</div>
 				<div class="goal-bottom">
 					<small>{Math.round(goal.percent)}% saved</small>
@@ -111,6 +140,8 @@
 					</form>
 				{/if}
 			</div>
+		{:else}
+			<p class="empty-state">No active saving goals. Add one above to start tracking it here.</p>
 		{/each}
 	</div>
 
@@ -198,6 +229,31 @@
 
 	.add-goal-card small.error {
 		color: var(--coral);
+	}
+
+	.goal-summary {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.75rem;
+		padding: 0.9rem 1rem;
+		border-radius: 4px;
+		background: var(--sage);
+	}
+
+	.goal-summary div {
+		display: grid;
+		gap: 0.25rem;
+		min-width: 0;
+	}
+
+	.goal-summary span {
+		font-size: 0.72rem;
+		color: var(--muted);
+	}
+
+	.goal-summary strong {
+		font-size: 1.15rem;
+		color: var(--ink);
 	}
 
 	.goal-grid {
@@ -297,6 +353,25 @@
 		border-radius: inherit;
 	}
 
+	.goal-amounts {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.75rem;
+		font-size: 0.75rem;
+		font-weight: 700;
+		color: var(--ink);
+	}
+
+	.empty-state {
+		grid-column: 1 / -1;
+		margin: 0;
+		padding: 1rem;
+		border: 1px dashed var(--line);
+		border-radius: 4px;
+		color: var(--muted);
+		font-size: 0.85rem;
+	}
+
 	small {
 		font-size: 0.75rem;
 		color: var(--muted);
@@ -371,6 +446,10 @@
 	}
 
 	@media (max-width: 600px) {
+		.goal-summary {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
 		.goal-form-fields {
 			grid-template-columns: 1fr;
 		}

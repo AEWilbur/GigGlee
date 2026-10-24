@@ -16,7 +16,8 @@
 	);
 
 	function saveGig() {
-		const cleanedName = gigName.trim() || 'New Gig';
+		const cleanedName = gigName.trim();
+		if (!cleanedName) return;
 		const cleanedAmount = Number(amountEarned) || 0;
 
 		account.addGig({
@@ -52,7 +53,7 @@
 			<div class="gig-form-fields">
 				<label>
 					<span>Gig name</span>
-					<input type="text" placeholder="e.g. Wedding ceremony" bind:value={gigName} />
+					<input type="text" placeholder="e.g. Wedding ceremony" bind:value={gigName} required />
 				</label>
 
 				<label>
@@ -80,10 +81,10 @@
 				<section class="allocation-section">
 					<div class="allocation-header">
 						<div>
-							<h2>Where the money goes</h2>
-							<p>This is a rough split based on your settings.</p>
+							<h2>Estimated split</h2>
+							<p>Based on your monthly targets, tax rate, and reserve settings.</p>
 						</div>
-						<strong>{Math.round(account.goalAllocationPercent)}% to goals</strong>
+						<strong>{Math.round(account.goalAllocationPercent)}% of what's left to goals</strong>
 					</div>
 					<div class="plan-list">
 						<div>
@@ -97,8 +98,13 @@
 							>
 						</div>
 						<div>
-							<span>Bills paid</span><strong
+							<span>Must-pay expenses</span><strong
 								>${planPreview.summary.billPayment.toLocaleString()}</strong
+							>
+						</div>
+						<div>
+							<span>Nice-to-have spending</span><strong
+								>${planPreview.summary.niceToHavePayment.toLocaleString()}</strong
 							>
 						</div>
 						<div>
@@ -107,7 +113,7 @@
 							>
 						</div>
 						<div>
-							<span>Goal savings</span><strong
+							<span>Saving goals</span><strong
 								>${planPreview.summary.goalReserve.toLocaleString()}</strong
 							>
 						</div>

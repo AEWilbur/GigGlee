@@ -1,21 +1,44 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { account } from '$lib/state/account.svelte';
+	import logo from '$lib/assets/gigglee-logo.svg';
 
 	let username = $state('');
 	let password = $state('');
 	let email = $state('');
+	let mode = $state<'sign-in' | 'create-account'>('sign-in');
+	const creatingAccount = $derived(mode === 'create-account');
 
-	function handleSubmit(event: SubmitEvent): void {
+	async function handleSubmit(event: SubmitEvent): Promise<void> {
 		event.preventDefault();
 		account.username = username.trim();
+		await goto('/');
 	}
 </script>
 
-<section class="login-page" aria-label="Sign in to GigGlee">
+<section
+	class="login-page"
+	aria-label={creatingAccount ? 'Create a GigGlee account' : 'Sign in to GigGlee'}
+>
 	<form class="login-form" onsubmit={handleSubmit}>
 		<div class="form-heading">
-			<div class="brand-mark">GigGlee</div>
-			<h1>Sign in</h1>
+			<img class="brand-mark" src={logo} alt="GigGlee" />
+			<h1>{creatingAccount ? 'Create account' : 'Sign in'}</h1>
+		</div>
+
+		<div class="auth-tabs" aria-label="Account access">
+			<button
+				type="button"
+				class:active={!creatingAccount}
+				aria-pressed={!creatingAccount}
+				onclick={() => (mode = 'sign-in')}>Sign in</button
+			>
+			<button
+				type="button"
+				class:active={creatingAccount}
+				aria-pressed={creatingAccount}
+				onclick={() => (mode = 'create-account')}>Create account</button
+			>
 		</div>
 
 		<label for="login-name">Your name</label>
@@ -43,13 +66,12 @@
 			id="login-password"
 			name="password"
 			type="password"
-			autocomplete="current-password"
+			autocomplete={creatingAccount ? 'new-password' : 'current-password'}
 			bind:value={password}
 			required
 		/>
 
-		<button type="submit">Sign in</button>
-		<p class="demo-note">Demo sign-in. Password is not checked or saved.</p>
+		<button type="submit">{creatingAccount ? 'Create account' : 'Sign in'}</button>
 	</form>
 </section>
 
@@ -80,17 +102,41 @@
 	}
 
 	.brand-mark {
-		margin-bottom: 1rem;
-		color: var(--sage-strong);
-		font-family: 'Itim', Arial, sans-serif;
-		font-size: 1.5rem;
-		font-weight: 700;
+		display: block;
+		width: min(100%, 220px);
+		height: auto;
+		margin: 0 0 1rem;
 	}
 
 	.form-heading h1 {
 		margin: 0;
 		color: var(--ink);
 		font-size: 1.9rem;
+	}
+
+	.auth-tabs {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		margin-bottom: 0.35rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.login-form .auth-tabs button {
+		min-height: 2.6rem;
+		border: 0;
+		border-bottom: 3px solid transparent;
+		border-radius: 0;
+		margin: 0;
+		padding: 0.55rem;
+		background: transparent;
+		color: var(--muted);
+		font-weight: 700;
+		cursor: pointer;
+	}
+
+	.login-form .auth-tabs button.active {
+		border-bottom-color: var(--coral);
+		color: var(--ink);
 	}
 
 	.login-form label {
@@ -126,11 +172,8 @@
 		background: var(--sage-strong);
 	}
 
-	.demo-note {
-		margin: 0.2rem 0 0;
-		color: var(--muted);
-		font-size: 0.73rem;
-		line-height: 1.5;
+	.login-form .auth-tabs button:hover {
+		background: var(--blue-wash);
 	}
 
 	@media (max-width: 800px) {

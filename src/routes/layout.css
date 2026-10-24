@@ -50,10 +50,14 @@ body {
 }
 
 .brand {
-	font-size: 1.8rem;
-	font-weight: 700;
-	color: var(--sage-strong);
-	padding: 0.25rem 0.65rem 1.7rem;
+	display: block;
+	padding: 0.25rem 0.45rem 1.7rem;
+}
+
+.brand img {
+	display: block;
+	width: 100%;
+	height: auto;
 }
 
 .top-nav {
@@ -142,8 +146,8 @@ a:focus-visible {
 
 	.brand {
 		flex: 0 0 auto;
+		width: 140px;
 		padding: 0;
-		font-size: 1.5rem;
 	}
 
 	.top-nav {

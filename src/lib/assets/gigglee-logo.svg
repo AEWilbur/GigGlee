@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 916 398" fill="none">
+	<circle cx="195" cy="205" r="124" fill="#1F9D78" />
+	<circle
+		cx="195"
+		cy="205"
+		r="100"
+		stroke="#F8CE67"
+		stroke-dasharray="1.5 14"
+		stroke-linecap="round"
+		stroke-width="6"
+	/>
+	<path d="M139 170c7-13 19-13 26 0m54 0c7-13 19-13 26 0" stroke="#FFF" stroke-linecap="round" stroke-width="13" />
+	<path d="M158 210h74c5 0 8 3 8 8v7c0 27-20 45-45 45s-45-18-45-45v-7c0-5 3-8 8-8Z" fill="#FFF" />
+	<text x="380" y="244" fill="#0D0D0D" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="120" font-weight="900" textLength="192" lengthAdjust="spacingAndGlyphs">Gig</text>
+	<text x="570" y="244" fill="#1F9D78" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="120" font-weight="900" textLength="258" lengthAdjust="spacingAndGlyphs">Glee</text>
+</svg>

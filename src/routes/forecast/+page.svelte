@@ -5,141 +5,194 @@
 		`$${Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 	let additionalGigs = $state(4);
 	const forecast = $derived(account.getForecast(additionalGigs));
-	const projectedAfterCosts = $derived(forecast.projectedNet - forecast.bills - forecast.taxes);
 </script>
 
-<section class="page-shell">
+<section class="page-shell forecast-page">
 	<div class="page-header">
 		<h1>Forecast</h1>
 	</div>
 
-	<section class="overview-section">
-		<div class="section-heading">
-			<div>
-				<h2>Extra gigs</h2>
-				<span>Adding {additionalGigs} more gigs</span>
-			</div>
-			<span class="period-label">Average gig: {formatCurrency(forecast.averageGig)}</span>
+	<div class="forecast-layout">
+		<div class="forecast-main">
+			<section class="scenario-section" aria-labelledby="scenario-title">
+				<div class="section-heading">
+					<div>
+						<h2 id="scenario-title">Extra gigs</h2>
+						<p>Adjust how many more gigs to include.</p>
+					</div>
+					<div class="average-gig">
+						<span>Average gig</span>
+						<strong>{formatCurrency(forecast.averageGig)}</strong>
+					</div>
+				</div>
+
+				<div class="gig-planner">
+					<output for="extra-gigs">{additionalGigs}</output>
+					<div class="range-control">
+						<label for="extra-gigs">Extra gigs to plan for</label>
+						<input id="extra-gigs" type="range" min="0" max="20" bind:value={additionalGigs} />
+						<div class="range-labels"><span>0</span><span>20</span></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="breakdown-section" aria-labelledby="breakdown-title">
+				<div class="section-heading breakdown-heading">
+					<h2 id="breakdown-title">Projected money</h2>
+					<span>Estimated from your gig history</span>
+				</div>
+
+				<dl class="breakdown-list">
+					<div class="breakdown-row income-row">
+						<dt>
+							<span>Projected income</span>
+							<small>Before gig expenses and allocations</small>
+						</dt>
+						<dd>{formatCurrency(forecast.projectedIncome)}</dd>
+					</div>
+					<div class="breakdown-row">
+						<dt>Gig expenses</dt>
+						<dd>{formatCurrency(forecast.gigExpenses)}</dd>
+					</div>
+					<div class="breakdown-row">
+						<dt>Must-pay expenses</dt>
+						<dd>{formatCurrency(forecast.mustPayPayment)}</dd>
+					</div>
+					<div class="breakdown-row">
+						<dt>Tax reserve</dt>
+						<dd>{formatCurrency(forecast.taxes)}</dd>
+					</div>
+					<div class="breakdown-row">
+						<dt>Nice-to-have spending</dt>
+						<dd>{formatCurrency(forecast.niceToHavePayment)}</dd>
+					</div>
+					<div class="breakdown-row">
+						<dt>Slow-month backup</dt>
+						<dd>{formatCurrency(forecast.slowMonthReserve)}</dd>
+					</div>
+					<div class="breakdown-row">
+						<dt>Saving goals</dt>
+						<dd>{formatCurrency(forecast.goalReserve)}</dd>
+					</div>
+					<div class="breakdown-row total-row">
+						<dt>Safe to spend now</dt>
+						<dd>{formatCurrency(forecast.safeToSpend)}</dd>
+					</div>
+				</dl>
+			</section>
 		</div>
 
-		<div class="gig-planner">
-			<strong>{additionalGigs}</strong>
-			<div>
-				<label for="extra-gigs">Extra gigs</label>
-				<input id="extra-gigs" type="range" min="0" max="20" bind:value={additionalGigs} />
-				<div class="range-labels"><span>0</span><span>20</span></div>
+		<aside class="outlook-section" aria-labelledby="outlook-title">
+			<div class="outlook-heading">
+				<h2 id="outlook-title">Estimated money left over</h2>
+				<p>At this pace</p>
 			</div>
-		</div>
 
-		<div class="income-card">
-			<strong>{formatCurrency(forecast.projectedIncome)}</strong>
-			<span>before gig expenses and bills</span>
-			<div class="bar"><span style="width: 100%"></span></div>
-		</div>
-
-		<div class="cost-grid">
-			<div class="cost-card gig-expense">
-				<span>Gig expenses</span>
-				<strong>{formatCurrency(forecast.extraExpenses)}</strong>
+			<div class="timeline">
+				<div class="time-block">
+					<span>Next month</span>
+					<strong>{formatCurrency(forecast.nextMonth)}</strong>
+				</div>
+				<div class="time-block">
+					<span>3 months</span>
+					<strong>{formatCurrency(forecast.threeMonths)}</strong>
+				</div>
+				<div class="time-block">
+					<span>6 months</span>
+					<strong>{formatCurrency(forecast.sixMonths)}</strong>
+				</div>
 			</div>
-			<div class="cost-card bills">
-				<span>Bills</span>
-				<strong>{formatCurrency(forecast.bills)}</strong>
-			</div>
-			<div class="cost-card taxes">
-				<span>Taxes</span>
-				<strong>{formatCurrency(forecast.taxes)}</strong>
-			</div>
-			<div class="cost-card remaining">
-				<span>After bills and taxes</span>
-				<strong>{formatCurrency(projectedAfterCosts)}</strong>
-			</div>
-		</div>
-	</section>
-
-	<section class="outlook-section">
-		<div class="section-heading">
-			<div>
-				<span>Estimated money left over</span>
-			</div>
-		</div>
-
-		<div class="timeline">
-			<div class="time-block">
-				<span>Next month</span>
-				<strong>{formatCurrency(forecast.nextMonth)}</strong>
-			</div>
-			<div class="time-block">
-				<span>3 months</span>
-				<strong>{formatCurrency(forecast.threeMonths)}</strong>
-			</div>
-			<div class="time-block">
-				<span>6 months</span>
-				<strong>{formatCurrency(forecast.sixMonths)}</strong>
-			</div>
-		</div>
-	</section>
+		</aside>
+	</div>
 </section>
 
 <style>
-	.overview-section,
-	.outlook-section {
-		border: 1px solid var(--line);
-		border-radius: 4px;
-		padding: 1rem;
-		box-shadow: none;
+	.forecast-page {
+		gap: 1.5rem;
 	}
 
-	.overview-section {
+	.forecast-layout {
 		display: grid;
-		gap: 1rem;
-		background: var(--blue-wash);
+		grid-template-columns: minmax(0, 1.5fr) minmax(250px, 0.8fr);
+		gap: clamp(2rem, 4vw, 4rem);
+		align-items: start;
+	}
+
+	.forecast-main {
+		display: grid;
+		gap: 2rem;
+		min-width: 0;
 	}
 
 	.section-heading {
 		display: flex;
-		align-items: center;
+		align-items: baseline;
 		justify-content: space-between;
-		gap: 1rem;
+		gap: 1.5rem;
 	}
 
-	.section-heading h2 {
+	.section-heading h2,
+	.outlook-heading h2 {
 		margin: 0;
-		font-size: 1.15rem;
 		color: var(--ink);
+		font-size: 1.15rem;
 		font-weight: 700;
 	}
 
-	.period-label {
-		font-size: 0.78rem;
+	.section-heading p,
+	.section-heading > span,
+	.outlook-heading p {
+		margin: 0.25rem 0 0;
 		color: var(--muted);
+		font-size: 0.78rem;
+	}
+
+	.scenario-section {
+		padding-bottom: 1.5rem;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.average-gig {
+		display: grid;
+		gap: 0.15rem;
+		text-align: right;
+		white-space: nowrap;
+	}
+
+	.average-gig span {
+		color: var(--muted);
+		font-size: 0.75rem;
+	}
+
+	.average-gig strong {
+		font-size: 1.05rem;
+		font-variant-numeric: tabular-nums;
 	}
 
 	.gig-planner {
 		display: grid;
-		grid-template-columns: 3rem 1fr;
+		grid-template-columns: 3rem minmax(0, 1fr);
 		align-items: center;
 		gap: 1rem;
-		padding: 0.8rem;
-		border-radius: 4px;
-		background: var(--surface-muted);
+		margin-top: 1.2rem;
 	}
 
-	.gig-planner > strong {
-		font-size: 1.8rem;
+	.gig-planner output {
+		color: var(--ink);
+		font-size: 2rem;
+		font-variant-numeric: tabular-nums;
 		text-align: center;
-		color: var(--ink);
 	}
 
-	.gig-planner label {
+	.range-control label {
 		display: block;
-		margin-bottom: 0.2rem;
-		font-size: 0.75rem;
-		font-weight: 700;
+		margin-bottom: 0.45rem;
 		color: var(--ink);
+		font-size: 0.8rem;
+		font-weight: 700;
 	}
 
-	.gig-planner input {
+	.range-control input {
 		width: 100%;
 		accent-color: var(--action);
 	}
@@ -147,105 +200,162 @@
 	.range-labels {
 		display: flex;
 		justify-content: space-between;
+		color: var(--muted);
 		font-size: 0.65rem;
-		color: var(--muted);
 	}
 
-	.income-card {
-		display: grid;
-		gap: 0.25rem;
-		padding: 1.2rem;
-		border-radius: 4px;
-		background: var(--sage);
+	.breakdown-heading {
+		align-items: end;
+		margin-bottom: 0.8rem;
 	}
 
-	.income-card strong {
-		font-size: clamp(2rem, 5vw, 3.2rem);
-		line-height: 1;
-		color: var(--ink);
+	.breakdown-heading > span {
+		text-align: right;
 	}
 
-	.income-card > span {
-		font-size: 0.78rem;
-		color: var(--muted);
+	.breakdown-list {
+		margin: 0;
+		border-top: 1px solid var(--line);
 	}
 
-	.bar {
-		height: 0.7rem;
-		background: rgba(255, 255, 255, 0.6);
-		border-radius: 2px;
-		overflow: hidden;
-		margin-top: 0.8rem;
-	}
-
-	.bar span {
-		display: block;
-		height: 100%;
-		background: var(--sage-strong);
-		border-radius: inherit;
-	}
-
-	.cost-grid,
-	.timeline {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(180px, 1fr));
+	.breakdown-row {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
 		gap: 1rem;
+		padding: 0.8rem 0;
+		border-bottom: 1px solid var(--line);
 	}
 
-	.cost-card,
-	.time-block {
+	.breakdown-row dt {
 		display: grid;
-		align-content: center;
-		gap: 0.25rem;
-		min-height: 90px;
-		padding: 0.9rem;
-		border: 1px solid var(--line);
-		border-radius: 4px;
-		background: var(--surface);
-	}
-
-	.cost-card span,
-	.time-block span {
-		font-size: 0.78rem;
+		gap: 0.2rem;
 		color: var(--muted);
+		font-size: 0.86rem;
 	}
 
-	.cost-card strong,
-	.time-block strong {
-		font-size: clamp(1.35rem, 3vw, 2rem);
+	.breakdown-row dt small {
+		font-size: 0.72rem;
+	}
+
+	.breakdown-row dd {
+		margin: 0;
 		color: var(--ink);
+		font-size: 0.95rem;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
 	}
 
-	.cost-card.bills {
-		background: var(--butter);
+	.income-row dt {
+		color: var(--ink);
+		font-weight: 700;
 	}
 
-	.cost-card.taxes {
-		background: var(--blue-wash);
+	.income-row dd {
+		color: var(--sage-strong);
+		font-size: 1.2rem;
 	}
 
-	.cost-card.gig-expense {
-		background: var(--coral-wash);
+	.total-row {
+		margin-top: 0.4rem;
+		padding: 1rem 0;
+		border-top: 2px solid var(--ink);
+		border-bottom: 0;
 	}
 
-	.cost-card.remaining {
-		background: var(--sage);
+	.total-row dt,
+	.total-row dd {
+		color: var(--ink);
+		font-size: 1rem;
+		font-weight: 700;
 	}
 
 	.outlook-section {
-		display: grid;
-		gap: 1rem;
-		background: var(--sage);
+		padding-left: clamp(1.25rem, 2.5vw, 2rem);
+		border-left: 1px solid var(--line);
+	}
+
+	.outlook-heading {
+		margin-bottom: 1rem;
 	}
 
 	.time-block {
-		background: var(--surface);
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.75rem;
+		padding: 1rem 0;
+		border-top: 1px solid var(--line);
 	}
 
-	@media (max-width: 700px) {
-		.cost-grid,
+	.time-block span {
+		color: var(--muted);
+		font-size: 0.78rem;
+	}
+
+	.time-block strong {
+		color: var(--ink);
+		font-size: 1.35rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	@media (max-width: 900px) {
+		.forecast-layout {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+
+		.outlook-section {
+			padding: 1.5rem 0 0;
+			border-top: 1px solid var(--line);
+			border-left: 0;
+		}
+
+		.timeline {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 1rem;
+		}
+
+		.time-block {
+			align-items: start;
+			flex-direction: column;
+			gap: 0.4rem;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.forecast-layout {
+			gap: 1.5rem;
+		}
+
+		.section-heading {
+			align-items: start;
+		}
+
+		.breakdown-heading {
+			flex-direction: column;
+			gap: 0.25rem;
+		}
+
+		.breakdown-heading > span {
+			text-align: left;
+		}
+
+		.gig-planner {
+			grid-template-columns: 2.5rem minmax(0, 1fr);
+			gap: 0.75rem;
+		}
+
 		.timeline {
 			grid-template-columns: 1fr;
+			gap: 0;
+		}
+
+		.time-block {
+			align-items: baseline;
+			flex-direction: row;
 		}
 	}
 </style>

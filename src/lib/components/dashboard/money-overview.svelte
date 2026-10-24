@@ -35,16 +35,16 @@
 			{#if hasGigs}
 				<dl class="plan-list">
 					<div class="plan-row">
-						<dt>Bills still due</dt>
-						<dd>
-							{formatCurrency(
-								Math.max(monthlyProgress.monthlyBills - monthlyProgress.billsPaid, 0)
-							)}
-						</dd>
+						<dt>Must-pay funded</dt>
+						<dd>{formatCurrency(monthlyProgress.billsPaid)}</dd>
 					</div>
 					<div class="plan-row">
 						<dt>Tax set aside</dt>
 						<dd>{formatCurrency(monthlyProgress.taxes)}</dd>
+					</div>
+					<div class="plan-row">
+						<dt>Nice-to-have funded</dt>
+						<dd>{formatCurrency(monthlyProgress.niceToHavePaid)}</dd>
 					</div>
 					<div class="plan-row">
 						<dt>Slow-month cushion</dt>
