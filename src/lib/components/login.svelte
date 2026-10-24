@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { account } from '$lib/state/account.svelte';
+	import { resolve } from '$app/paths';
+
 	import logo from '$lib/assets/gigglee-logo.svg';
 
 	let username = $state('');
@@ -12,7 +14,7 @@
 	async function handleSubmit(event: SubmitEvent): Promise<void> {
 		event.preventDefault();
 		account.username = username.trim();
-		await goto('/');
+		await goto(resolve('/'));
 	}
 </script>
 

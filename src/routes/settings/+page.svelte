@@ -10,15 +10,14 @@
 	const niceToHaveExpenses = $derived(
 		account.expenseCategories.filter((category) => category.group === 'nice-to-have')
 	);
-	const mustPayTotal = $derived(
-		mustPayExpenses.reduce((total, category) => total + category.amount, 0)
-	);
-	const niceToHaveTotal = $derived(
-		niceToHaveExpenses.reduce((total, category) => total + category.amount, 0)
-	);
-	const totalMonthlyExpenses = $derived(
-		account.expenseCategories.reduce((total, category) => total + category.amount, 0)
-	);
+
+	function expenseTotal(expenses: (typeof account.expenseCategories)[number][]): number {
+		return expenses.reduce((total, category) => total + category.amount, 0);
+	}
+	const mustPayTotal = $derived(expenseTotal(mustPayExpenses));
+	const niceToHaveTotal = $derived(expenseTotal(niceToHaveExpenses));
+	const totalMonthlyExpenses = $derived(expenseTotal(account.expenseCategories));
+
 	let customCategoryName = $state('');
 	let customCategoryGroup = $state<ExpenseCategory['group']>('must-pay');
 	let customCategoryError = $state('');
